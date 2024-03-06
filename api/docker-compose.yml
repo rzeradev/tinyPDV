@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+  tinypdv-nginx:
+    container_name: tinypdv-nginx
+    tty: true
+    mem_limit: 128m
+    mem_reservation: 128m
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+      args:
+          PHP_HOST: tinypdv-php
+    ports:
+      - "9091:80"
+    volumes:
+      - ./:/var/www/html:delegated
+    networks:
+      - tinypdv_network
+    depends_on:
+      - tinypdv-php
+
+  tinypdv-php:
+    container_name: tinypdv-php
+    tty: true
+    restart: unless-stopped
+    mem_limit: 768m
+    mem_reservation: 768m
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    env_file:
+      - .env.docker
+    volumes:
+      - ./:/var/www/html:delegated
+      - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
+      - ./docker/php/conf.d/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini:ro
+    networks:
+      - tinypdv_network
+    ports:
+      - 9000
+    healthcheck:
+      test: pidof php-fpm
+      interval: 1s
+      timeout: 1s
+      retries: 60
+    depends_on:
+      tinypdv-mysql:
+        condition: service_healthy
+
+  tinypdv-mysql:
+    image: mysql:8.0
+    container_name: tinypdv-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: tinypdv
+      MYSQL_DATABASE: tinypdv_db
+      MYSQL_USER: tinypdv
+      MYSQL_PASSWORD: tinypdv
+    volumes:
+      - ../mysql:/var/lib/mysql:delegated
+      - ./docker/mysql/my.cnf:/etc/my.cnf
+    networks:
+      - tinypdv_network
+    ports:
+      - "3309:3306"
+    healthcheck:
+      test: mysqladmin ping -h localhost -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 10
+
+networks:
+  tinypdv_network:
+    driver: bridge
