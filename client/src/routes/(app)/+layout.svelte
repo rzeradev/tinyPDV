@@ -2,12 +2,12 @@
     import "../../app.pcss";
     import * as Sheet from "$lib/components/ui/sheet";
     import * as Avatar from "$lib/components/ui/avatar";
+    import Aside from "$lib/components/ui/aside/+page.svelte"
 </script>
 
+<div class="relative min-h-screen grid grid-cols-[16rem_auto] grid-rows-[min-content_auto_min-content]">
 
-<div class="relative flex min-h-screen flex-col">
-
-    <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header class="h-min col-span-2 sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div class="container flex h-14 max-w-screen-2xl items-center">
             <div class="mr-4 hidden md:flex"><a href="/" class="mr-6 flex items-center space-x-2">
                 <span class="hidden font-bold sm:inline-block">LumiCell</span></a>
@@ -19,7 +19,6 @@
                 </nav>
             </div>
 
-
             <Sheet.Root>
                 <Sheet.Trigger>
                     <button type="button" class="inline-flex items-center justify-center rounded-md font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden">
@@ -28,14 +27,14 @@
                     </button>
                 </Sheet.Trigger>
                 <Sheet.Content side="left">
-                  <Sheet.Header>
-                    <nav class="flex flex-col items-start ml-10 my-4 text-lg">
-                        <a href="/docs" class="transition-colors hover:text-foreground/80 text-foreground/60">Docs</a>
-                        <a href="/docs/components" class="transition-colors hover:text-foreground/80 text-foreground/60">Components</a>
-                        <a href="/themes" class="transition-colors hover:text-foreground/80 text-foreground/60">Themes</a>
-                        <a href="/examples" class="transition-colors hover:text-foreground/80 text-foreground/60">Examples</a>
-                    </nav>
-                  </Sheet.Header>
+                <Sheet.Header>
+                <nav class="flex flex-col items-start ml-10 my-4 text-lg">
+                    <a href="/docs" class="transition-colors hover:text-foreground/80 text-foreground/60">Docs</a>
+                    <a href="/docs/components" class="transition-colors hover:text-foreground/80 text-foreground/60">Components</a>
+                    <a href="/themes" class="transition-colors hover:text-foreground/80 text-foreground/60">Themes</a>
+                    <a href="/examples" class="transition-colors hover:text-foreground/80 text-foreground/60">Examples</a>
+                </nav>
+                </Sheet.Header>
                 </Sheet.Content>
             </Sheet.Root>
             
@@ -43,10 +42,18 @@
                 <Avatar.Root>
                     <Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" />
                     <Avatar.Fallback>CN</Avatar.Fallback>
-                  </Avatar.Root>
+                </Avatar.Root>
             </div>
         </div>
     </header>
 
-    <slot />
+    <Aside></Aside>
+
+    <div id="content" class="grid-cols-[2]">
+        <slot />
+    </div>
+
+    <footer class="col-span-2">
+        oi
+    </footer>
 </div>
