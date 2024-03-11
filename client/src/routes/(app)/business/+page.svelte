@@ -2,10 +2,16 @@
 	import * as Form from "$lib/components/ui/form";
 	import { Input } from "$lib/components/ui/input";
 	import * as Select from "$lib/components/ui/select";
-	import { Switch } from "$lib/components/ui/switch/index.js";
+	import { Switch } from "$lib/components/ui/switch";
 	import { Textarea } from "$lib/components/ui/textarea";
+	import * as Popover from "$lib/components/ui/popover";
+	import * as Command from "$lib/components/ui/command";
+	import { cn } from "$lib/utils.js";
+	import { tick } from "svelte";
 	import { toast } from "svelte-sonner";
 	import { browser } from "$app/environment";
+	import Check from "svelte-radix/Check.svelte";
+	import { buttonVariants } from "$lib/components/ui/button";
 	import SuperDebug, {
 		type SuperValidated,
 		type Infer,
@@ -17,10 +23,18 @@
 		newBusinessSchema,
 		type NewBusinessSchema,
 		typesPerson,
+		states,
 	} from "$lib/schemas/schemas";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { axiosInstance } from "$lib/axios";
 	import type { AxiosError } from "axios";
+	import {
+		maskCNPJ,
+		maskCPF,
+		maskCellphone,
+		maskZipcode,
+	} from "$lib/utils/utils";
+	import { CaretSort } from "svelte-radix";
 
 	export let data: SuperValidated<Infer<NewBusinessSchema>>;
 
@@ -37,7 +51,7 @@
 		},
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, reset } = form;
 
 	$: selectedType = {
 		label: typesPerson[$formData.type],
@@ -46,20 +60,32 @@
 
 	let first_name = "Razão Social";
 	let last_name = "Nome Fantasia";
-	let document = "CNPJ";
+	let documentType = "CNPJ";
 
 	$: if ($formData.type === "pf") {
 		first_name = "Nome";
 		last_name = "Sobrenome";
-		document = "CPF";
+		documentType = "CPF";
 	} else {
 		first_name = "Razão Social";
 		last_name = "Nome Fantasia";
-		document = "CNPJ";
+		documentType = "CNPJ";
 	}
 
 	$formData.status = true;
 	$formData.type = "pj";
+
+	let open = false;
+
+	// We want to refocus the trigger button when the user selects
+	// an item from the list so users can continue navigating the
+	// rest of the form with the keyboard.
+	function closeAndFocusTrigger(triggerId: string) {
+		open = false;
+		tick().then(() => {
+			document.getElementById(triggerId)?.focus();
+		});
+	}
 </script>
 
 <div class="container">
@@ -70,11 +96,12 @@
 	<form method="POST" use:enhance class="p-6 pt-0 grid gap-4 grid-cols-4">
 		<Form.Field {form} name="type" class="grid gap-2 col-span-4">
 			<Form.Control let:attrs>
-				<Form.Label>Tipo Pessoa</Form.Label>
+				<Form.Label>Tipo Pessoa *</Form.Label>
 				<Select.Root
 					selected={selectedType}
 					onSelectedChange={(v) => {
 						v && ($formData.type = v.value);
+						$formData.cpf_cnpj = "";
 					}}
 				>
 					<Select.Input name={attrs.name} />
@@ -95,7 +122,7 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>{first_name}</Form.Label
+					>{first_name} *</Form.Label
 				>
 				<Input
 					{...attrs}
@@ -113,7 +140,7 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>{last_name}</Form.Label
+					>{last_name} *</Form.Label
 				>
 				<Input
 					{...attrs}
@@ -128,17 +155,18 @@
 		</Form.Field>
 
 		{#if $formData.type === "pf"}
-			<Form.Field {form} name="cpf" class="grid gap-2 col-span-2">
+			<Form.Field {form} name="cpf_cnpj" class="grid gap-2 col-span-2">
 				<Form.Control let:attrs>
 					<Form.Label
 						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>{document}</Form.Label
+						>{documentType} *</Form.Label
 					>
 					<Input
+						on:keyup={maskCPF}
 						{...attrs}
-						bind:value={$formData.cpf}
+						bind:value={$formData.cpf_cnpj}
 						class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-						placeholder={document}
+						placeholder="###.###.###-##"
 						type="text"
 					/>
 				</Form.Control>
@@ -147,17 +175,18 @@
 		{/if}
 
 		{#if $formData.type === "pj"}
-			<Form.Field {form} name="cnpj" class="grid gap-2 col-span-2">
+			<Form.Field {form} name="cpf_cnpj" class="grid gap-2 col-span-2">
 				<Form.Control let:attrs>
 					<Form.Label
 						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>{document}</Form.Label
+						>{documentType} *</Form.Label
 					>
 					<Input
+						on:keyup={maskCNPJ}
 						{...attrs}
-						bind:value={$formData.cnpj}
+						bind:value={$formData.cpf_cnpj}
 						class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-						placeholder={document}
+						placeholder="##.###.###/####-##"
 						type="text"
 					/>
 				</Form.Control>
@@ -169,9 +198,10 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>CEP</Form.Label
+					>CEP *</Form.Label
 				>
 				<Input
+					on:keyup={maskZipcode}
 					{...attrs}
 					bind:value={$formData.zip_code}
 					class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
@@ -186,7 +216,7 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Rua</Form.Label
+					>Rua *</Form.Label
 				>
 				<Input
 					{...attrs}
@@ -203,7 +233,7 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Número</Form.Label
+					>Número *</Form.Label
 				>
 				<Input
 					{...attrs}
@@ -220,7 +250,7 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Bairro</Form.Label
+					>Bairro *</Form.Label
 				>
 				<Input
 					{...attrs}
@@ -234,19 +264,54 @@
 		</Form.Field>
 
 		<Form.Field {form} name="state" class="grid gap-2">
-			<Form.Control let:attrs>
-				<Form.Label
-					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Estado</Form.Label
-				>
-				<Input
-					{...attrs}
-					bind:value={$formData.state}
-					class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-					placeholder="Estado"
-					type="text"
-				/>
-			</Form.Control>
+			<Popover.Root bind:open let:ids>
+				<Form.Control let:attrs>
+					<Form.Label>Estado *</Form.Label>
+					<Popover.Trigger
+						class={cn(
+							buttonVariants({ variant: "outline" }),
+							"w-full justify-between bg-transparent",
+							!$formData.state && "text-muted-foreground"
+						)}
+						role="combobox"
+						{...attrs}
+					>
+						{states.find((f) => f.value === $formData.state)?.label ??
+							"Selecione seu estado."}
+						<CaretSort class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+					</Popover.Trigger>
+					<input hidden value={$formData.state} name={attrs.name} />
+				</Form.Control>
+				<Popover.Content class="p-0">
+					<Command.Root>
+						<Command.Input
+							autofocus
+							placeholder="Pesquisar estado..."
+							class="h-9"
+						/>
+						<Command.Empty>Estado não encontrado.</Command.Empty>
+						<Command.Group>
+							{#each states as state}
+								<Command.Item
+									value={state.label}
+									onSelect={() => {
+										$formData.state = state.value;
+										closeAndFocusTrigger(ids.trigger);
+									}}
+								>
+									{state.label}
+									<Check
+										class={cn(
+											"ml-auto h-4 w-4",
+											state.value !== $formData.state && "text-transparent"
+										)}
+									/>
+								</Command.Item>
+							{/each}
+						</Command.Group>
+					</Command.Root>
+				</Popover.Content>
+			</Popover.Root>
 			<Form.FieldErrors />
 		</Form.Field>
 
@@ -254,9 +319,10 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Telefone</Form.Label
+					>Telefone *</Form.Label
 				>
 				<Input
+					on:keyup={maskCellphone}
 					{...attrs}
 					bind:value={$formData.phone}
 					class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
@@ -271,7 +337,7 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Email</Form.Label
+					>Email *</Form.Label
 				>
 				<Input
 					{...attrs}
