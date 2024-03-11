@@ -37,3 +37,36 @@ export const newRegisterSchema = z.object({
 });
 
 export type NewRegisterSchema = typeof newRegisterSchema
+
+
+export const typesPerson = {
+  pf: "Pessoa Física",
+  pj: "Pessoa Jurídica",
+}
+
+type typePerson = keyof typeof typesPerson;
+
+const required = {required_error: "O Campo é obrigatório"}
+export const newBusinessSchema = z.object({
+  id: z.number().optional(), // assuming it's auto-incremented and not provided in the form
+  type: z.enum(Object.keys(typesPerson) as [typePerson, ...typePerson[]], required).default("pf"),
+  first_name: z.string(required).min(1).max(100),
+  last_name: z.string(required).min(1).max(100),
+  cpf: z.string(required).length(18).refine((value) => /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/.test(value), "CPF com formato inválido ###.###.###-##"),
+  cnpj: z.string(required).length(18).refine((value) => /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/.test(value), "CNPJ com formato inválido ##.###.###/####-##"),
+  zip_code: z.string(required).length(9),
+  street: z.string(required).max(100),
+  number: z.string(required).max(10),
+  neighborhood: z.string(required).max(100),
+  state: z.string(required).length(2), // assuming 'state' is a 2 character string
+  phone: z.string(required).max(15), // adjust the validation according to the phone format
+  email: z.string(required).email().max(100),
+  website: z.string().url().max(100).optional(), // assuming 'website' is optional and must be a valid URL
+  logo: z.string().max(100).optional(), // assuming 'logo' is optional
+  description: z.string().optional(), // assuming 'description' is optional, text field has no max length in Zod
+  opens_at: z.string().max(5).optional(), // assuming 'opens_at' is optional
+  closes_at: z.string().max(5).optional(), // assuming 'closes_at' is optional
+  status: z.boolean(required).default(true),
+});
+
+export type NewBusinessSchema = typeof newBusinessSchema;

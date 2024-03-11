@@ -11,9 +11,8 @@
     import { newRegisterSchema, type NewRegisterSchema } from "$lib/schemas/schemas";
     import Button from "$lib/components/ui/button/button.svelte";
     import { axiosInstance } from "$lib/axios";
-    //# Unused for now
-    //import axios from "axios";
-    //import type { AxiosError } from "axios";
+    import axios from "axios";
+    import type { AxiosError } from "axios";
 
         export let data: SuperValidated<Infer<NewRegisterSchema>>;
 
@@ -35,7 +34,7 @@
     const doLogin = async (values: object) => {
         try {
             const api = axiosInstance();
-            const response = await api.post("api/login", values);
+            const response = await api.post("api/register", values);
             console.log(response.data.auth_token);
             apiError = null;
 
