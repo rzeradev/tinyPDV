@@ -1,20 +1,9 @@
 <script lang="ts">
 	import "../../app.pcss";
-	import * as Sheet from "$lib/components/ui/sheet";
-	import * as Avatar from "$lib/components/ui/avatar";
 	import { Toaster } from "$lib/components/ui/sonner";
-
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import { LogOut } from "lucide-svelte";
 	import { Header } from "$lib/components/app/header";
 	import { Aside } from "$lib/components/app/aside";
-
-	const logout = () => {
-		localStorage.removeItem("token");
-		localStorage.removeItem("user");
-		window.location.href = "/login";
-	};
+	import Footer from "$lib/components/app/footer/footer.svelte";
 </script>
 
 <Toaster />
@@ -30,7 +19,9 @@
 		<div class="content">
 			<slot />
 		</div>
-		<div class="footer border">Footer</div>
+		<div class="footer">
+			<Footer />
+		</div>
 	</div>
 </div>
 

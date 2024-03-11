@@ -3,7 +3,7 @@
 	import * as Avatar from "$lib/components/ui/avatar";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-	import { LogOut } from "lucide-svelte";
+	import { LogOut, Rocket } from "lucide-svelte";
 
 	const logout = () => {
 		localStorage.removeItem("token");
@@ -18,7 +18,8 @@
 	<div class="container flex h-14 max-w-screen-2xl items-center">
 		<div class="mr-4 hidden md:flex">
 			<a href="/" class="mr-6 flex items-center space-x-2">
-				<span class="hidden font-bold sm:inline-block">LumiCell</span></a
+				<Rocket /><span class="hidden font-bold sm:inline-block">tinyPDV</span
+				></a
 			>
 			<nav class="flex items-center gap-6 text-sm">
 				<!-- <a href="/login" class="transition-colors hover:text-foreground/80 text-foreground/60">Login</a>
