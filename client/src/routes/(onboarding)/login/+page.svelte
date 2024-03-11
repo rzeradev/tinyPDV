@@ -12,6 +12,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { axiosInstance } from "$lib/axios";
 	import type { AxiosError } from "axios";
+	import { Rocket } from "lucide-svelte";
 
 	export let data: SuperValidated<Infer<NewLoginSchema>>;
 
@@ -55,7 +56,9 @@
 <div
 	class="h-screen w-screen flex flex-col justify-center items-center bg-no-repeat bg-cover bg-center bg-opacity-5"
 >
-	<h1 class="text-3xl font-extrabold mb-2">LumiCell</h1>
+	<h1 class=" flex text-3xl font-extrabold mb-2">
+		<Rocket class="mt-2 mr-2" /> tinyPDV
+	</h1>
 	<div
 		class="w-80 md:w-96 rounded-xl border border-slate-600 border-opacity-30 bg-card bg-opacity-100 text-card-foreground"
 	>
@@ -104,5 +107,14 @@
 
 			<Button type="submit">Iniciar Sessão</Button>
 		</form>
+
+		<fieldset class="px-6 py-4">
+			<legend class="text-sm text-muted-foreground">
+				Ainda não tem uma conta? <a
+					href="/register"
+					class="text-accent-foreground">Registre-se</a
+				>
+			</legend>
+		</fieldset>
 	</div>
 </div>

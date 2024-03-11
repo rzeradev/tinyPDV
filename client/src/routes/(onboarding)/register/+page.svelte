@@ -16,6 +16,7 @@
 	import { axiosInstance } from "$lib/axios";
 	import axios from "axios";
 	import type { AxiosError } from "axios";
+	import { Rocket } from "lucide-svelte";
 
 	export let data: SuperValidated<Infer<NewRegisterSchema>>;
 
@@ -59,7 +60,9 @@
 <div
 	class="h-screen w-screen flex flex-col justify-center items-center bg-no-repeat bg-cover bg-center bg-opacity-5"
 >
-	<h1 class="text-3xl font-extrabold mb-2">tinyPDV</h1>
+	<h1 class=" flex text-3xl font-extrabold mb-2">
+		<Rocket class="mt-2 mr-2" /> tinyPDV
+	</h1>
 	<div
 		class="w-80 md:w-96 rounded-xl border border-slate-600 border-opacity-30 bg-card bg-opacity-100 text-card-foreground"
 	>
@@ -80,7 +83,7 @@
 						{...attrs}
 						bind:value={$formData.name}
 						class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-						placeholder="Nome"
+						placeholder="Nome Completo"
 						type="text"
 					/>
 				</Form.Control>
@@ -142,5 +145,13 @@
 
 			<Button type="submit" class="col-span-2">Registrar-se</Button>
 		</form>
+
+		<fieldset class="px-6 py-4">
+			<legend class="text-sm text-muted-foreground">
+				Já tem uma conta? <a href="/login" class="text-accent-foreground"
+					>Login</a
+				>
+			</legend>
+		</fieldset>
 	</div>
 </div>

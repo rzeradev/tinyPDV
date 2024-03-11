@@ -17,7 +17,7 @@ export const newRegisterSchema = z
 	.object({
 		name: z
 			.string({ required_error: "O campo Nome precisa ser preenchido." })
-			.min(3, { message: "O campo nome precisa ter no mínimo 3 caracteres" })
+			.min(6, { message: "O campo nome precisa ter no mínimo 3 caracteres" })
 			.max(30, { message: "O campo nome precisa ter no máximo 30 caracteres" }),
 		email: z
 			.string({ required_error: "O campo Email precisa ser preenchido." })
