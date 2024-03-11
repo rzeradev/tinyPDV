@@ -59,7 +59,10 @@ const config = {
 			},
 			backgroundImage: {
 				'login': "url('/img/wallpaper-sky.jpg')",
-			  }
+			},
+			screens: {
+				"2md": "790px"
+			}
 		}
 	},
 };
