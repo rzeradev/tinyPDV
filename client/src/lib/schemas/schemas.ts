@@ -164,7 +164,7 @@ export const newBusinessSchema = z
 export type NewBusinessSchema = typeof newBusinessSchema;
 
 export const productConditions = {
-	new: "Novo",
+	novo: "Novo",
 	openbox: "Openbox"
 }
 
@@ -174,11 +174,11 @@ export const newProductSchema = z.object({
 	name: z.string(required).min(4),
 	brand: z.string(required).min(3),
 	color: z.string(required).min(4).max(20),
-	quantity: z.number(required),
+	quantity: z.string(required),
 	sku: z.string(required).min(3).max(20),
 	condition: z
 	.enum(Object.keys(productConditions) as [productCondition, ...productCondition[]], required)
-	.default("new"),
+	.default("novo"),
 	price: z
 	.string(required)
 	.refine((value) => {
@@ -188,7 +188,8 @@ export const newProductSchema = z.object({
 	.instanceof(File, { message: "Por favor faça o upload de um arquivo."})
 	.refine((file) => {
 		file.size < 500_000, "O arquivo não pode ter mais que 500KB de tamanho"
-	})
+	}),
+	description: z.string().optional()
 })
 
 export type NewProductSchema = typeof newProductSchema
