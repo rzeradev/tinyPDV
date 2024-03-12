@@ -162,3 +162,33 @@ export const newBusinessSchema = z
 	);
 
 export type NewBusinessSchema = typeof newBusinessSchema;
+
+export const productConditions = {
+	new: "Novo",
+	openbox: "Openbox"
+}
+
+type productCondition = keyof typeof productConditions
+
+export const newProductSchema = z.object({
+	name: z.string(required).min(4),
+	brand: z.string(required).min(3),
+	color: z.string(required).min(4).max(20),
+	quantity: z.number(required),
+	sku: z.string(required).min(3).max(20),
+	condition: z
+	.enum(Object.keys(productConditions) as [productCondition, ...productCondition[]], required)
+	.default("new"),
+	price: z
+	.string(required)
+	.refine((value) => {
+		/\b\d{1,3}(?:\.\d{3})*,\d+\b/.test(value ?? ""), "Formato inválido"
+	}),
+	images: z
+	.instanceof(File, { message: "Por favor faça o upload de um arquivo."})
+	.refine((file) => {
+		file.size < 500_000, "O arquivo não pode ter mais que 500KB de tamanho"
+	})
+})
+
+export type NewProductSchema = typeof newProductSchema
