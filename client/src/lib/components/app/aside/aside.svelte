@@ -3,8 +3,8 @@
 		Building2,
 		FileBarChart,
 		Home,
-		ScanBarcode,
-		ShoppingCart,
+		PackagePlus,
+		ShoppingCart
 	} from "lucide-svelte";
 </script>
 
@@ -76,7 +76,7 @@
 					<span
 						class="flex flex-none items-center text-gray-400 group-hover:text-blue-500 dark:text-gray-500 dark:group-hover:text-gray-300"
 					>
-						<ScanBarcode class="w-4" />
+						<PackagePlus class="w-4" />
 					</span>
 					<span class="grow py-2">Produto</span>
 				</a>
