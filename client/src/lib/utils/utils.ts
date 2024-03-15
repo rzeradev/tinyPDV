@@ -9,7 +9,7 @@ export const maskCPF = (e: KeyboardEvent) => {
 		let digitIndex = 0;
 
 		if (digits.length > 11) {
-			return;
+			digits.slice(0, -1)
 		}
 
 		// Loop through the mask pattern
@@ -45,7 +45,7 @@ export const maskCNPJ = (e: KeyboardEvent) => {
 		let digitIndex = 0;
 
 		if (digits.length > 14) {
-			return;
+			digits.slice(0, -1)
 		}
 
 		// Loop through the mask pattern
@@ -82,7 +82,7 @@ export const maskCellphone = (e: KeyboardEvent) => {
 		let digitIndex = 0;
 
 		if (digits.length > 11) {
-			return;
+			digits.slice(0, -1)
 		}
 
 		// Loop through the mask pattern
@@ -119,7 +119,7 @@ export const maskZipcode = (e: KeyboardEvent) => {
 		let digitIndex = 0;
 
 		if (digits.length > 8) {
-			return;
+			digits.slice(0, -1)
 		}
 
 		// Loop through the mask pattern
