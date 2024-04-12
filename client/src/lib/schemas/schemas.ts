@@ -1,6 +1,8 @@
 import { message } from "sveltekit-superforms";
 import { z } from "zod";
 
+const required = { required_error: "O Campo é obrigatório" };
+
 export const newLoginSchema = z.object({
 	email: z
 		.string({ required_error: "O campo Email precisa ser preenchido." })
@@ -84,7 +86,6 @@ export const states = [
 
 type State = (typeof states)[number]["value"];
 
-const required = { required_error: "O Campo é obrigatório" };
 export const newBusinessSchema = z
 	.object({
 		id: z.number().optional(), // assuming it's auto-incremented and not provided in the form
