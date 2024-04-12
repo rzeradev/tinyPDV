@@ -9,6 +9,8 @@ export const axiosInstance = () => {
 		headers: {
 			Accept: "application/json",
 		},
+		withCredentials: true,
+		withXSRFToken: true,
 	});
 };
 

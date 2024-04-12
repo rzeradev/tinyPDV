@@ -10,9 +10,8 @@
 	import { zodClient } from "sveltekit-superforms/adapters";
 	import { newLoginSchema, type NewLoginSchema } from "$lib/schemas/schemas";
 	import Button from "$lib/components/ui/button/button.svelte";
-	import { axiosInstance } from "$lib/axios";
-	import type { AxiosError } from "axios";
 	import { Rocket } from "lucide-svelte";
+	import { apiService } from "$lib/services/ApiService";
 
 	export let data: SuperValidated<Infer<NewLoginSchema>>;
 
@@ -28,21 +27,17 @@
 
 	const { form: formData, enhance } = form;
 
-	$formData.email = "admin@gmail.com";
+	$formData.email = "test@example.com";
 	$formData.password = "password";
 
 	const doLogin = async (values: object) => {
 		try {
-			const api = axiosInstance();
-			const response = await api.post("api/login", values);
-			console.log(response.data.auth_token);
-			apiError = null;
+			await apiService.post("login", values);
+			let { data } = await apiService.get("api/user");
+			console.log(data);
 
-			const { auth_token: token, user: user } = await response.data;
-
-			if (token) {
-				localStorage.setItem("token", token);
-				localStorage.setItem("user", JSON.stringify(user));
+			if (data.id) {
+				localStorage.setItem("user", JSON.stringify(data));
 				window.location.href = "/";
 			}
 		} catch (error: any) {

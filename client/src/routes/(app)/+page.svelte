@@ -1,16 +1,33 @@
 <script lang="ts">
+	import auth from "$lib/auth";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
+	import { userStore } from "$lib/store/user";
+	import { onMount } from "svelte";
+	import { apiService } from "$lib/services/ApiService";
+	let user: any = null;
+	onMount(async () => {
+		try {
+			const response = await apiService.get("api/user");
+			user = response.data;
+		} catch (error: any) {
+			console.log(error);
+		}
+	});
 </script>
 
 <!-- Hero title -->
-<div class="container mx-auto">
-	<h1 class="text-4xl font-bold">Page</h1>
+<div class="container mx-auto my-4">
+	<h1 class="text-4xl font-bold">
+		Welcome back <span class="text-purple-800">{$userStore?.name}</span>
+	</h1>
 	<p class="text-lg">This is a page</p>
 </div>
 
+<div></div>
+
 <!-- tailwind grid 12 column responsive -->
-<div class="container mx-auto grid grid-cols-12 gap-4">
+<div class="container mx-auto grid grid-cols-3 gap-4">
 	<div class="col-span-12 md:col-span-4">
 		<Card.Root>
 			<Card.Header>
@@ -30,7 +47,7 @@
 			</Card.Footer>
 		</Card.Root>
 	</div>
-	<div class="col-span-12 md:col-span-4">
+	<div class="col-span-12 md:col-span-1">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Card Title</Card.Title>
@@ -44,7 +61,7 @@
 			</Card.Footer>
 		</Card.Root>
 	</div>
-	<div class="col-span-12 md:col-span-4">
+	<div class="col-span-12 md:col-span-1">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Card Title</Card.Title>
@@ -58,7 +75,7 @@
 			</Card.Footer>
 		</Card.Root>
 	</div>
-	<div class="col-span-12 md:col-span-4">
+	<div class="col-span-12 md:col-span-1 row-start-2 row-end-3">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Card Title</Card.Title>
@@ -72,7 +89,7 @@
 			</Card.Footer>
 		</Card.Root>
 	</div>
-	<div class="col-span-12 md:col-span-4">
+	<div class="col-span-12 md:col-span-1">
 		<Card.Root class="border-zinc-500">
 			<Card.Header>
 				<Card.Title>Card Title</Card.Title>
@@ -86,7 +103,7 @@
 			</Card.Footer>
 		</Card.Root>
 	</div>
-	<div class="col-span-12 md:col-span-4">
+	<div class="col-span-12 md:col-span-1">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Card Title</Card.Title>
@@ -100,7 +117,7 @@
 			</Card.Footer>
 		</Card.Root>
 	</div>
-	<div class="col-span-12 md:col-span-4">
+	<div class="col-span-12 md:col-span-1">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>Card Title</Card.Title>

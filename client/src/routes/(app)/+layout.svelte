@@ -4,6 +4,18 @@
 	import { Header } from "$lib/components/app/header";
 	import { Aside } from "$lib/components/app/aside";
 	import Footer from "$lib/components/app/footer/footer.svelte";
+	import auth from "$lib/auth";
+	import { goto } from "$app/navigation";
+	import { userStore } from "$lib/store/user";
+
+	const user = auth.user();
+	if (!user) {
+		goto("login");
+	}
+
+	if (user) {
+		userStore.setUser(user);
+	}
 </script>
 
 <Toaster />

@@ -6,7 +6,6 @@
 	import { LogOut, Rocket } from "lucide-svelte";
 
 	const logout = () => {
-		localStorage.removeItem("token");
 		localStorage.removeItem("user");
 		window.location.href = "/login";
 	};
