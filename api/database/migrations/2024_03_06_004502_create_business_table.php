@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('business', function (Blueprint $table) {
-            $table->ulid()->primary();
+            $table->ulid('id')->primary();
             $table->foreignUlid('user_id')->nullable()->references('id')->on('users')->onDelete('set null');
             $table->string('type', 2);
             $table->string('first_name', 100);
@@ -25,11 +25,11 @@ return new class extends Migration
             $table->string('state', 2);
             $table->string('phone', 15);
             $table->string('email', 100);
-            $table->string('website', 100);
-            $table->string('logo', 100);
-            $table->text('description');
-            $table->string('opens_at', 5);
-            $table->string('closes_at', 5);
+            $table->string('website', 100)->nullable();
+            $table->string('logo', 100)->nullable();
+            $table->text('description')->nullable();
+            $table->string('opens_at', 5)->nullable();
+            $table->string('closes_at', 5)->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
