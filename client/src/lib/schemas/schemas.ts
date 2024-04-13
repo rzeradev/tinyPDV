@@ -30,7 +30,7 @@ export const newRegisterSchema = z
 			.min(1, { message: "O campo Senha precisa ser preenchido." })
 			.min(8, { message: "O campo Senha precisa ter no mínimo 8 caracteres." })
 			.max(50),
-		confirm_password: z
+		password_confirmation: z
 			.string({
 				required_error: "O campo Confirmar Senha precisa ser preenchido.",
 			})
@@ -40,7 +40,7 @@ export const newRegisterSchema = z
 			})
 			.max(50),
 	})
-	.refine((data) => data.confirm_password === data.password, {
+	.refine((data) => data.password_confirmation === data.password, {
 		message: "As senhas precisam ser idênticas",
 		path: ["password"],
 	});

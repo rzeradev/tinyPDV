@@ -34,7 +34,6 @@
 		try {
 			await apiService.post("login", values);
 			let { data } = await apiService.get("api/user");
-			console.log(data);
 
 			if (data.id) {
 				localStorage.setItem("user", JSON.stringify(data));

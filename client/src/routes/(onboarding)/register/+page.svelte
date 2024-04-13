@@ -13,10 +13,9 @@
 		type NewRegisterSchema,
 	} from "$lib/schemas/schemas";
 	import Button from "$lib/components/ui/button/button.svelte";
-	import { axiosInstance } from "$lib/axios";
-	import axios from "axios";
-	import type { AxiosError } from "axios";
 	import { Rocket } from "lucide-svelte";
+	import { apiService } from "$lib/services/ApiService";
+	import { goto } from "$app/navigation";
 
 	export let data: SuperValidated<Infer<NewRegisterSchema>>;
 
@@ -32,22 +31,17 @@
 
 	const { form: formData, enhance } = form;
 
-	$formData.email = "admin@gmail.com";
+	$formData.name = "John Snow";
+	$formData.email = "test@example.com";
 	$formData.password = "password";
 
 	const doLogin = async (values: object) => {
 		try {
-			const api = axiosInstance();
-			const response = await api.post("api/register", values);
-			console.log(response.data.auth_token);
-			apiError = null;
+			let { data } = await apiService.post("register", values);
 
-			const { auth_token: token, user: user } = await response.data;
-
-			if (token) {
-				localStorage.setItem("token", token);
-				localStorage.setItem("user", JSON.stringify(user));
-				window.location.href = "/";
+			if (data.data.id) {
+				localStorage.setItem("user", JSON.stringify(data.data));
+				goto("/");
 			}
 		} catch (error: any) {
 			apiError = error.response.data.message;
@@ -122,7 +116,7 @@
 				<Form.FieldErrors class="text-red-500" />
 			</Form.Field>
 
-			<Form.Field {form} name="confirm_password" class="grid gap-2">
+			<Form.Field {form} name="password_confirmation" class="grid gap-2">
 				<Form.Control let:attrs>
 					<Form.Label
 						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -130,7 +124,7 @@
 					>
 					<Input
 						{...attrs}
-						bind:value={$formData.confirm_password}
+						bind:value={$formData.password_confirmation}
 						class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
 						placeholder="******"
 						type="password"
