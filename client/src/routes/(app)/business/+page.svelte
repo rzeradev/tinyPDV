@@ -26,8 +26,6 @@
 		states,
 	} from "$lib/schemas/schemas";
 	import Button from "$lib/components/ui/button/button.svelte";
-	import { axiosInstance } from "$lib/axios";
-	import type { AxiosError } from "axios";
 	import {
 		maskCNPJ,
 		maskCPF,
@@ -47,6 +45,24 @@
 				toast.success("You submitted" + JSON.stringify(form.data, null, 2));
 			} else {
 				toast.error("Por favor confira os erros no formulário.");
+			}
+		},
+		onChange(e) {
+			const targetName = (e.target as HTMLInputElement)?.name;
+			if (targetName === "cpf_cnpj" && $formData.type === "pf") {
+				$formData.cpf_cnpj = maskCPF($formData.cpf_cnpj);
+			}
+
+			if (targetName === "cpf_cnpj" && $formData.type === "pj") {
+				$formData.cpf_cnpj = maskCNPJ($formData.cpf_cnpj);
+			}
+
+			if (targetName === "phone") {
+				$formData.phone = maskCellphone($formData.phone);
+			}
+
+			if (targetName === "zip_code") {
+				$formData.zip_code = maskZipcode($formData.zip_code);
 			}
 		},
 	});
@@ -153,46 +169,22 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-
-		{#if $formData.type === "pf"}
-			<Form.Field {form} name="cpf_cnpj" class="grid gap-2 col-span-2">
-				<Form.Control let:attrs>
-					<Form.Label
-						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>{documentType} *</Form.Label
-					>
-					<Input
-						on:keyup={maskCPF}
-						{...attrs}
-						bind:value={$formData.cpf_cnpj}
-						class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-						placeholder="###.###.###-##"
-						type="text"
-					/>
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-		{/if}
-
-		{#if $formData.type === "pj"}
-			<Form.Field {form} name="cpf_cnpj" class="grid gap-2 col-span-2">
-				<Form.Control let:attrs>
-					<Form.Label
-						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>{documentType} *</Form.Label
-					>
-					<Input
-						on:keyup={maskCNPJ}
-						{...attrs}
-						bind:value={$formData.cpf_cnpj}
-						class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-						placeholder="##.###.###/####-##"
-						type="text"
-					/>
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-		{/if}
+		<Form.Field {form} name="cpf_cnpj" class="grid gap-2 col-span-2">
+			<Form.Control let:attrs>
+				<Form.Label
+					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+					>{documentType} *</Form.Label
+				>
+				<Input
+					{...attrs}
+					bind:value={$formData.cpf_cnpj}
+					class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+					placeholder="###.###.###-##"
+					type="text"
+				/>
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
 
 		<Form.Field {form} name="zip_code" class="grid gap-2">
 			<Form.Control let:attrs>
@@ -201,7 +193,6 @@
 					>CEP *</Form.Label
 				>
 				<Input
-					on:keyup={maskZipcode}
 					{...attrs}
 					bind:value={$formData.zip_code}
 					class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
@@ -319,14 +310,13 @@
 			<Form.Control let:attrs>
 				<Form.Label
 					class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>Telefone *</Form.Label
+					>WhatsApp *</Form.Label
 				>
 				<Input
-					on:keyup={maskCellphone}
 					{...attrs}
 					bind:value={$formData.phone}
 					class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-					placeholder="Telefone"
+					placeholder="(00) 00000-0000"
 					type="text"
 				/>
 			</Form.Control>
