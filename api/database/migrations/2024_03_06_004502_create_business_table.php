@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('business', function (Blueprint $table) {
-            // id autoincrement, type, first_name, last_name, cpf_cnpj, zip_code, street, number, neighborhood, state, phone, email, website, logo, description, open_hours status, created_at, updated_at, softdelete
-            $table->id();
+            $table->ulid()->primary();
+            $table->foreignUlid('user_id')->nullable()->references('id')->on('users')->onDelete('set null');
             $table->string('type', 2);
             $table->string('first_name', 100);
             $table->string('last_name', 100);
@@ -28,8 +28,9 @@ return new class extends Migration
             $table->string('website', 100);
             $table->string('logo', 100);
             $table->text('description');
-            $table->string('open_hours', 100);
-            $table->enum('status', ['E', 'D'])->default('E');
+            $table->string('opens_at', 5);
+            $table->string('closes_at', 5);
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
