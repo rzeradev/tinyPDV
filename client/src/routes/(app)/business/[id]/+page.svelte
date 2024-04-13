@@ -34,8 +34,10 @@
 	} from "$lib/utils/utils";
 	import { CaretSort } from "svelte-radix";
 	import { apiService } from "$lib/services/ApiService";
+	import { page } from "$app/stores";
 
 	export let data: SuperValidated<Infer<NewBusinessSchema>>;
+	const id = $page.params.id;
 
 	const form = superForm(data, {
 		SPA: true,
@@ -43,7 +45,7 @@
 		async onUpdated({ form }) {
 			if (form.valid) {
 				try {
-					let { data } = await apiService.post("api/business", form.data);
+					let { data } = await apiService.put(`api/business/${id}`, form.data);
 
 					data = data.data;
 
@@ -111,20 +113,25 @@
 		});
 	}
 
-	$formData.first_name = "Raoni";
-	$formData.last_name = "Ribeiro";
-	$formData.cpf_cnpj = "123.456.789-00";
-	$formData.zip_code = "12345-678";
-	$formData.street = "Rua dos Bobos";
-	$formData.number = "123";
-	$formData.neighborhood = "Bairro dos Bobos";
-	$formData.state = "SP";
-	$formData.phone = "(11) 99999-9999";
-	$formData.email = "alephtus@gmail.com";
-	$formData.website = "https://beeblock.com.br";
-	$formData.description = "Uma breve descrição";
-	$formData.opens_at = "08:00";
-	$formData.closes_at = "18:00";
+	const fetchBusiness = async (id: string) => {
+		let { data } = await apiService.get(`api/business/${id}`);
+		data = data.data;
+
+		//remove id, user_id, logo from data
+		data = Object.fromEntries(
+			Object.entries(data).filter(
+				([key, value]) => !["id", "user_id", "logo"].includes(key)
+			)
+		);
+
+		//map data to $formData
+		$formData = {
+			...$formData,
+			...data,
+		};
+	};
+
+	fetchBusiness(id);
 </script>
 
 <div class="container">

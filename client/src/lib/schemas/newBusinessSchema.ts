@@ -73,7 +73,7 @@ export const newBusinessSchema = z
 		state: z.enum(states.map((state) => state.value) as [State, ...State[]], {
 			errorMap: () => ({ message: "Por favor selecione um estado." }),
 		}),
-		phone: z.string(required).max(14, { message: "Máximo de 14 caracteres" }),
+		phone: z.string(required).max(15, { message: "Máximo de 15 caracteres" }),
 		email: z
 			.string(required)
 			.email({ message: "Email inválido" })
