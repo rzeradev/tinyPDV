@@ -11,7 +11,7 @@
 	import {
 		newRegisterSchema,
 		type NewRegisterSchema,
-	} from "$lib/schemas/schemas";
+	} from "$lib/schemas/newRegisterSchema";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Rocket } from "lucide-svelte";
 	import { apiService } from "$lib/services/ApiService";

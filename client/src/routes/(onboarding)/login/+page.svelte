@@ -8,7 +8,10 @@
 	} from "sveltekit-superforms";
 
 	import { zodClient } from "sveltekit-superforms/adapters";
-	import { newLoginSchema, type NewLoginSchema } from "$lib/schemas/schemas";
+	import {
+		newLoginSchema,
+		type NewLoginSchema,
+	} from "$lib/schemas/newLoginSchema";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { Rocket } from "lucide-svelte";
 	import { apiService } from "$lib/services/ApiService";

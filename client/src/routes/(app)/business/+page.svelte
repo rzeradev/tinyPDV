@@ -24,7 +24,7 @@
 		type NewBusinessSchema,
 		typesPerson,
 		states,
-	} from "$lib/schemas/schemas";
+	} from "$lib/schemas/newBusinessSchema";
 	import Button from "$lib/components/ui/button/button.svelte";
 	import {
 		maskCNPJ,
